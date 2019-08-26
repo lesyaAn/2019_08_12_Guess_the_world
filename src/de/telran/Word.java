@@ -1,7 +1,5 @@
 package de.telran;
 
-import java.util.Objects;
-
 public class Word {
     private String word;
     private String description;
@@ -30,15 +28,20 @@ public class Word {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Word)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
         Word word1 = (Word) o;
-        return getWord().equals(word1.getWord()) &&
-                getDescription().equals(word1.getDescription());
+
+        if (word != null ? !word.equals(word1.word) : word1.word != null) return false;
+        return description != null ? description.equals(word1.description) : word1.description == null;
+
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getWord(), getDescription());
+        int result = word != null ? word.hashCode() : 0;
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        return result;
     }
 
     @Override

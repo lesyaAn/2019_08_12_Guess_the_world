@@ -1,22 +1,22 @@
 package de.telran;
 
-import java.util.Random;
 import java.util.Scanner;
 
 public class Game {
+
     private final Scanner scanner = new Scanner(System.in);
-    private WordToGuess wordToGuess;
+
     private WordRepository wordRepository;
+    private WordToGuess wordToGuess;
 
     private int points;
-
 
 
     public Game() {
         wordRepository = new WordRepository();
     }
 
-    public void startNewGame(){
+    public void startNewGame() {
 
         Word word = wordRepository.getRandomWord();
         wordToGuess = new WordToGuess(word.getWord(), word.getDescription());
@@ -31,89 +31,83 @@ public class Game {
             if (askPlayerLetterOrWord()) {
                 //letter
                 char letterFromPlayer = askPlayerALetter();
-                //System.out.println(wordToGuess.getWord());
                 if (wordToGuess.hasChar(letterFromPlayer)) {
+                    points += 100;
                     wordToGuess.openLetter(letterFromPlayer);
                     informPlayerAboutSuccess(letterFromPlayer);
-                    printNumberOfTriesandPoints(numberOfTries, points);
+                    printNumberOfTriesAndPoints(numberOfTries);
+                    showMaskedWord(wordToGuess.getWordWithStars());
                     if (wordToGuess.checkIfGuessed()) {
-                        points += 100;
                         informPlayerAboutWin();
                         playerWon = true;
-                    } else{
-                       String wordWithStars = wordToGuess.getWordWithStars();
-                       System.out.println(wordWithStars);
                     }
                 } else {
                     numberOfTries--;
                     informPlayerAboutMistake(letterFromPlayer);
-                    printNumberOfTriesandPoints(numberOfTries,points);
-                    showMaskeWord(wordToGuess.getWordWithStars());
-                    if(numberOfTries == 0)
-                        informPlayerAboutLoose(wordToGuess.getWord());
+                    printNumberOfTriesAndPoints(numberOfTries);
+                    showMaskedWord(wordToGuess.getWordWithStars());
+                    if (numberOfTries == 0) {
+                        points = 0;
+                        informPlayerAboutLose(wordToGuess.getWord());
+                    }
                 }
-            }else{
+            } else {
                 //word
-                break;
+                String wordFromPlayer = askPlayerAWord();
+                if (wordToGuess.getWord().equals(wordFromPlayer)) {
+                    points +=300;
+                    informPlayerAboutWin();
+                    playerWon = true;
+                } else {
+                    numberOfTries = 0;
+                    points = 0;
+                    informPlayerAboutLose(wordToGuess.getWord());
+                }
             }
         }
     }
 
-    private void informPlayerAboutLoose(String word) {
+    private String askPlayerAWord() {
+        System.out.print("Please input a word:");
+        return scanner.nextLine().toLowerCase();
+    }
+
+    private void informPlayerAboutLose(String word) {
         System.out.println("You lost the game! The word was \""
                 + word.toUpperCase()
                 + "\"");
+        System.out.println("You won " + points + " points");
     }
 
-    private void showMaskeWord(String wordWithStars) {
+    private void showMaskedWord(String wordWithStars) {
         System.out.println(wordWithStars);
     }
 
     private void informPlayerAboutMistake(char letter) {
-
-        System.out.println("Oops, you made a mistake, try again! There is no such a letter " + letter + "!");
-
+        System.out.println("There is no such a letter " + letter + "!");
     }
 
     private void informPlayerAboutWin() {
-
-        String wordWithStars = wordToGuess.getWordWithStars();
-        System.out.println("The word is " + wordWithStars);
-
-        System.out.println("Hooray! You won!");
-        System.out.println("You won " + points + "points");
-
+        System.out.println("You guessed the word! You won!");
+        System.out.println("You won " + points + " points");
     }
 
     private void informPlayerAboutSuccess(char letter) {
-
-        System.out.println("Great! Keep up the good work!  You've guessed the letter " + letter + "!");
-
+        System.out.println("Success! You've guessed the letter " + letter + "!");
     }
 
-    private void printNumberOfTriesandPoints(int numberOfTries,int points){
-
-        System.out.println("Your number of tries is " + numberOfTries + " Your points are " + points);
+    private void printNumberOfTriesAndPoints(int numberOfTries) {
+        System.out.println("Your number of tries is " + numberOfTries);
+        System.out.println("Your number of points is " + points);
     }
 
     private char askPlayerALetter() {
-
-        System.out.println("Please enter a letter: ");
-        Scanner scanner = new Scanner(System.in);
-        String letterFromPlayer = scanner.nextLine();
-        //System.out.println("Your letter:  " + letterFromPlayer);
-
-        return letterFromPlayer.charAt(0);
+        System.out.print("Please input a letter:");
+        return scanner.nextLine().toLowerCase().charAt(0);
     }
 
     private boolean askPlayerLetterOrWord() {
-
-        System.out.println("What do you want to enter a letter or a word? ");
-        Scanner scanner = new Scanner(System.in);
-        String inputFromUser = scanner.nextLine();
-        return inputFromUser.equals("letter");
+        System.out.print("Word (w) or letter(l)?");
+        return scanner.nextLine().toLowerCase().charAt(0) != 'w';
     }
-
-
-
 }

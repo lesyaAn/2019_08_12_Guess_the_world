@@ -2,33 +2,15 @@ package de.telran;
 
 public class WordToGuess {
 
-    public String word;
+    private String word;
     private String description;
-    private boolean[] guessed = {true, false, false, true, false};
+    private boolean[] guessed;
 
 
     public WordToGuess(String word, String description) {
         this.word = word;
         this.description = description;
         this.guessed = new boolean[word.length()];
-    }
-
-    /*public boolean checkIfGuessed() {
-
-        for (int i = 0; i < guessed.length; i ++) {
-                if(guessed[i] == false){
-                    return false;
-                }
-            }
-        return true;
-
-    }*/
-
-    public boolean checkIfGuessed() {
-        for (boolean b: guessed){
-            if(!b) return false;
-        }
-         return true;
     }
 
 
@@ -44,8 +26,6 @@ public class WordToGuess {
         return wordWithStars.toString();
     }
 
-
-
     public boolean hasChar(char ch) {
         for (char currentChar: word.toCharArray()) {
             if (ch == currentChar)
@@ -54,29 +34,23 @@ public class WordToGuess {
         return false;
     }
 
-
-
-    public void openLetter(char ch){
-        for(int i = 0; i < word.length(); i++){
-            if(ch == word.charAt(i)){
+    public void openLetter(char ch) {
+        for (int i = 0; i < word.length(); i++) {
+            if (ch == word.charAt(i)) {
                 guessed[i] = true;
             }
         }
-
     }
 
-
-    public boolean openWord (String word) {
+    public boolean openWord(String word) {
         if (this.word.equals(word)) {
-            for (int i = 0; i < guessed.length; i ++) {
+            for (int i = 0; i < guessed.length; i++) {
                 guessed[i] = true;
             }
             return true;
         }
         return false;
     }
-
-
 
     public String getWord() {
         return word;
@@ -107,11 +81,17 @@ public class WordToGuess {
 
     @Override
     public String toString() {
-        return "Word{" +
+        return "WordToGuess{" +
                 "word='" + word + '\'' +
                 ", description='" + description + '\'' +
                 "array length=" + guessed.length +
                 '}';
     }
 
+    public boolean checkIfGuessed() {
+        for (boolean b: guessed) {
+            if (!b) return false;
+        }
+        return true;
+    }
 }
